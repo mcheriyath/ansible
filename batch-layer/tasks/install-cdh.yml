@@ -1,6 +1,6 @@
 ---
 - name: Fetch CDH relevant packages
-  user: ubuntu
+  user: vagrant
   sudo: True
   hosts: batch-layer
   tasks: 

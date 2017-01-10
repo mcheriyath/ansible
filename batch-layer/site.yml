@@ -1,0 +1,7 @@
+---
+- name: Configure provisioned servers
+  hosts: batch-layer
+  remote_user: vagrant
+  sudo: True
+
+-  include: tasks/install-cdh.yml
