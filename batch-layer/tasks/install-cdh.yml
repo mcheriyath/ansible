@@ -1,0 +1,13 @@
+---
+- name: Fetch CDH relevant packages
+  user: ubuntu
+  sudo: True
+  hosts: batch-layer
+  tasks: 
+  
+  - name: Copy script for fetching and installing CDH components in batch layer
+    copy: src=../scripts/install-cdh.sh dest=/home/ubuntu/kickoff.sh owner=ubuntu group=ubuntu mode=755
+  
+  - name: CDH un-attended installation
+    command: /home/ubuntu/kickoff.sh
+  - pause: minutes=1

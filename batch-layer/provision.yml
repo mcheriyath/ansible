@@ -1,0 +1,38 @@
+---
+
+- name: Provisioning Cloudera servers
+  hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+    - name: Launch instances
+      local_action:
+        module: ec2
+        region: us-east-1
+        keypair: project-rt
+        group: project-rt 
+        instance_type: m3.xlarge
+        image: ami-34cc7a5c
+        count: 1
+        wait: yes
+      register: ec2
+
+    - name: Add batch-layer instances to host group
+      local_action: add_host hostname={{ item.public_ip }} groupname=batch-layer
+      with_items: ec2.instances
+
+    - name: Add tag to instances
+      local_action: ec2_tag resource={{ item.id }} region=us-east-1 state=present
+      with_items: ec2.instances
+      args:
+        tags:
+          Name: cdh5 
+   
+    - name: Pause for 2 minute
+      action: pause minutes=2
+ 
+- name: Configure provisioned servers
+  hosts: batch-layer
+  remote_user: ubuntu
+  sudo: True
+  include: tasks/install-cdh.yml
